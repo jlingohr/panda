@@ -8,7 +8,7 @@ import pandas as pd
 import skimage.io
 from tqdm import tqdm
 
-from utils.image_processor import ImageProcessor
+from image_processor import ImageProcessor
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data-dir', type=str, required=True)
