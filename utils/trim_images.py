@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import skimage.io
+import tifffile
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
@@ -39,28 +40,21 @@ def crop_white_with_mask(image: np.ndarray, mask: np.ndarray, value: int = 255) 
 
 def to_png(image_id: str):
     img_path = os.path.join(args.data_dir, 'train_images', '{}.tiff'.format(image_id))
-    mask_path = os.path.join(args.data_dir, 'train_label_masks', '{}_mask.tiff'.format(image_id))
+    img_save_path = os.path.join(args.dest, 'images', '{}.png'.format(image_id))
     image = skimage.io.MultiImage(img_path)[args.level]
+
+    mask_path = os.path.join(args.data_dir, 'train_label_masks', '{}_mask.tiff'.format(image_id))
     if os.path.exists(mask_path):
         mask = skimage.io.MultiImage(mask_path)[args.level]
-        image_to_png(image_id, image, mask)
-        return 1
-    else:
-        image_to_png(image_id, image)
-        return 0
-
-
-def image_to_png(image_id: str, image: np.ndarray, mask: np.ndarray = None):
-    img_save_path = os.path.join(args.dest, 'images', '{}.png'.format(image_id))
-
-    if mask != None:
         mask_save_path = os.path.join(args.dest, 'masks', '{}_mask.png'.format(image_id))
         image, mask = crop_white_with_mask(image, mask)
         cv2.imwrite(img_save_path, image)
         cv2.imwrite(mask_save_path, mask)
+        return 1
     else:
         image = crop_white(image)
         cv2.imwrite(img_save_path, image)
+        return 0
 
 
 if __name__ == '__main__':
