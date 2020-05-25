@@ -48,12 +48,12 @@ def to_png(image_id: str):
         mask = skimage.io.MultiImage(mask_path)[args.level]
         mask_save_path = os.path.join(args.dest, 'masks', '{}_mask.png'.format(image_id))
         image, mask = crop_white_with_mask(image, mask)
-        cv2.imwrite(img_save_path, image)
-        cv2.imwrite(mask_save_path, mask)
+        cv2.imwrite(img_save_path, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+        cv2.imwrite(mask_save_path, cv2.cvtColor(mask, cv2.COLOR_RGB2BGR))
         return 1
     else:
         image = crop_white(image)
-        cv2.imwrite(img_save_path, image)
+        cv2.imwrite(img_save_path, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
         return 0
 
 
