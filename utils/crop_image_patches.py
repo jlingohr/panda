@@ -48,7 +48,7 @@ if __name__ == '__main__':
             img = cv2.imread(path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             patches = [img[y:y + window_size, x:x + window_size] for (x, y) in locations]
-            patches = [cv2.imencode('.png', patch) for patch in patches]
+            patches = [cv2.imencode('.png', patch)[1] for patch in patches]
 
             for idx, patch in enumerate(patches):
                 img_out.writestr('{}_{}.png'.format(image_id, idx), patch)
