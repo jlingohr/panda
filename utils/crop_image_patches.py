@@ -45,7 +45,7 @@ if __name__ == '__main__':
             locations = zip(crop_locations.x_loc, crop_locations.y_loc)
 
             path = os.path.join(args.data_dir, 'images', '{}.png'.format(image_id))
-            img = cv2.imread(img_path)
+            img = cv2.imread(path)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             patches = [img[y:y + window_size, x:x + window_size] for (x, y) in locations]
             patches = [cv2.imencode('.png', patch) for patch in patches]
