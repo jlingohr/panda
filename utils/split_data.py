@@ -32,7 +32,7 @@ if __name__ == '__main__':
         train_idx = X_train.index.to_numpy()
         val_idx = X_test.index.to_numpy()
 
-        np.save(os.path.join(args.data_dir, 'train_{}.npy'.format(idx), train_idx))
-        np.save(os.path.join(args.data_dir, 'val_{}.npy'.format(idx), val_idx))
+        np.save(os.path.join(args.data_dir, 'train_{}.npy'.format(idx)), train_idx)
+        np.save(os.path.join(args.data_dir, 'val_{}.npy'.format(idx)), val_idx)
 
 
