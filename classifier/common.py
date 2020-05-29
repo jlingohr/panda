@@ -2,6 +2,7 @@ import yaml
 import torch
 import sys
 import albumentations as albu
+from albumentations.torch import ToTensor
 
 
 def get_criterion(config):
@@ -34,5 +35,6 @@ def create_transforms(transform_list):
     for trans in transform_list:
         (trans_type, trans_params), = trans.items()
         trans_list.append(parse_transform(trans_type, trans_params))
+    trans_list.append(ToTensor())
 
     return albu.Compose(trans_list)

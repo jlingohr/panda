@@ -37,7 +37,8 @@ class PatchesDataset(Dataset):
         patch_ids = np.random.choice(patch_ids, size=self.num_samples, replace=False)
 
         patches = [cv2.imread('{}/images/{}_{}.png'.format(self.data_root, image_id, idx)) for idx in patch_ids]
-        patches = [self.transforms(patch) for patch in patches]
+        patches = [self.transforms(image=patch) for patch in patches]
+        patches = [patch['image'] for patch in patches]
         patches = torch.stack(patches)
 
         label = row['isup_grade']
