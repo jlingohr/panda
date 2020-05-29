@@ -15,13 +15,14 @@ class ImageProcessor:
         self.step_size = int((self.window_size - (self.window_size * self.overlap)))
 
     def process_image(self, img_path):
-        img_paths, x_loc, y_loc, R, G, B, class_counts = self._get_locations(img_path)
+        img_paths, patch_ids, x_loc, y_loc, hue, saturation, value, class_counts = self._get_locations(img_path)
         df = pd.DataFrame({'image_id': img_paths,
+                           'patch_id': patch_ids,
                            'x_loc': x_loc,
                            'y_loc': y_loc,
-                           'R': R,
-                           'G': G,
-                           'B': B,
+                           'hue': hue,
+                           'saturation': saturation,
+                           'value': value,
                            **class_counts})
         return df
 
@@ -40,11 +41,12 @@ class ImageProcessor:
 
             x_idx = []
             y_idx = []
-            R = []
-            G = []
-            B = []
+            hue = []
+            saturation = []
+            value = []
             img_paths = []
             class_counts = {k: [] for k in self.classes}
+            patch_ids = []
             for ix in range(x_steps * y_steps):
                 x_ix = int(min(x - self.window_size, (ix % x_steps) * self.step_size))
                 y_ix = int(min(y - self.window_size, (ix // x_steps) * self.step_size))
@@ -57,18 +59,20 @@ class ImageProcessor:
 
                 # Find image statistics
                 img_data = img[y_ix:y_ix+self.window_size, x_ix:x_ix+self.window_size]
-                r = img_data[:,:,0].sum()
-                g = img_data[:,:,1].sum()
-                b = img_data[:,:,2].sum()
+                hsv_img = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+                hmu = hsv_img[:, :, 0].mean()
+                smu = hsv_img[:, :, 1].mean()
+                vmu = hsv_img[:, :, 2].mean()
 
                 x_idx.append(x_ix)
                 y_idx.append(y_ix)
-                R.append(r)
-                G.append(g)
-                B.append(b)
+                hue.append(hmu)
+                saturation.append(smu)
+                value.append(vmu)
                 img_paths.append(image_id)
+                patch_ids.append(ix)
         except:
-            x_idx, y_idx, R, G, B = [-1], [-1], [-1], [-1], [-1]
+            x_idx, y_idx, hue, saturation, value, patch_ids = [-1], [-1], [-1], [-1], [-1], [-1]
             class_counts = {k: [-1] for k in self.classes}
             img_paths = [image_id]
-        return img_paths, x_idx, y_idx, R, G, B, class_counts
+        return img_paths, patch_ids, x_idx, y_idx, hue, saturation, value, class_counts
