@@ -29,7 +29,7 @@ class MILLearner(pl.LightningModule):
         self.best_loss = np.inf
         self.data_root = config['data_root']
         self.fold = fold
-        self.save_dir = '{}/{}'.format(dt_string, fold)
+        self.save_dir = 'runs/{}/{}/{}'.format(config['model_name'], dt_string, fold)
         self.debug = debug
 
         if not os.path.exists(self.save_dir):
@@ -144,8 +144,8 @@ class MILLearner(pl.LightningModule):
         val_df = df[df.index.isin(val_indices)].reset_index()
 
         if self.debug:
-            train_df = train_df[:1000]
-            val_df = val_df[:1000]
+            train_df = train_df[:32]
+            val_df = val_df[:32]
 
         crop_df = pd.read_csv(
             os.path.join(self.data_root, self.config['crop_csv']))

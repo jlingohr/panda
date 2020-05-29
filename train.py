@@ -1,5 +1,7 @@
 from datetime import datetime
 import yaml
+import shutil
+import os
 import argparse
 import torch
 
@@ -48,6 +50,11 @@ if __name__ == '__main__':
 
     model = get_model(config['network'], num_classes)
     dt_string = datetime.now().strftime('%Y%m%d_%H%M')
+    
+    working_dir = os.path.join('runs', config['model_name'], dt_string)
+    if not os.path.exists(working_dir):
+        os.makedirs(working_dir)
+        shutil.copy(args.config, os.path.join(working_dir, 'config.yaml'))
 
     for fold in config['folds']:
         logger = TensorBoardLogger('tensorboard/{}/{}'.format(dt_string, fold), name=model_name)
