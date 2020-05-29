@@ -137,7 +137,6 @@ class MILLearner(pl.LightningModule):
         val_transforms = create_transforms(self.config['transforms']['val'])
 
         df = pd.read_csv(os.path.join(self.data_root, self.config['csv_name']))
-        crop_df = pd.read_csv(os.path.join(self.data_root, self.config['crop_csv']))
         train_indices = np.load(os.path.join(self.data_root, 'train_{}.npy'.format(self.fold)))
         val_indices = np.load(os.path.join(self.data_root, 'val_{}.npy'.format(self.fold)))
 
@@ -148,11 +147,26 @@ class MILLearner(pl.LightningModule):
             train_df = train_df[:1000]
             val_df = val_df[:1000]
 
+        crop_df = pd.read_csv(
+            os.path.join(self.data_root, self.config['crop_csv']))
         train_crops = crop_df[crop_df.image_id.isin(train_df.image_id)]
         val_crops = crop_df[crop_df.image_id.isin(val_df.image_id)]
 
-        self.train_dataset = PatchesDataset(self.data_root, train_df, train_crops, train_transforms, window_size=self.config['window_size'])
-        self.val_dataset = PatchesDataset(self.data_root, val_df, val_crops, val_transforms, window_size=self.config['window_size'])
+        num_samples = self.config['num_samples']
+        max_patches = self.config['max_patches']
+
+        self.train_dataset = PatchesDataset(self.data_root,
+                                            train_df,
+                                            train_crops,
+                                            train_transforms,
+                                            window_size=self.config['window_size'],
+                                            num_samples=num_samples,
+                                            max_patches=max_patches)
+        self.val_dataset = PatchesDataset(self.data_root,
+                                          val_df,
+                                          val_crops,
+                                          val_transforms,
+                                          window_size=self.config['window_size'])
 
     def train_dataloader(self):
         dataloader = DataLoader(self.train_dataset,

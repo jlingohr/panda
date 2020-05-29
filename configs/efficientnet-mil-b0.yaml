@@ -8,8 +8,8 @@ batch_size: 8
 window_size: 256
 data_root: ~/data/trimmed
 csv_name: train.csv
-crop_csv: train_patches.csv
-folds: [0, 1, 2, 3, 4]
+crop_csv: dev.csv
+folds: [0]
 
 # Loss Functions
 criteria:
@@ -39,7 +39,7 @@ optimizer:
 scheduler:
   type: ReduceLROnPlateau
   params:
-    patience: 3
+    patience: 4
     verbose: True
     min_lr: 0.0000001
     factor: 0.2
